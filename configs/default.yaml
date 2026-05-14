@@ -1,0 +1,88 @@
+# Default configuration for the solarbess MVP.
+# Battery sized as a small commercial PV+BESS site (50 MW PV, ~20 MWh battery).
+# World statistics roughly calibrated to Estonia post-Feb 2025 regime.
+
+mtu_minutes: 15
+
+battery:
+  capacity_mwh: 20.0
+  p_charge_max_mw: 5.0
+  p_discharge_max_mw: 5.0
+  eta_charge: 0.95
+  eta_discharge: 0.95
+  soc_min_mwh: 1.0
+  soc_max_mwh: 19.0
+  soc_initial_mwh: 5.0
+  soc_terminal_min_mwh: 5.0
+  degradation_cost_eur_per_mwh: 4.0
+
+market:
+  export_limit_mw: 55.0
+  import_limit_mw: 0.0          # no grid imports - solar-only charging
+  fees_eur_per_mwh: 0.05
+  da_gate_local_time: "12:00"
+  intraday_lead_times_h: [6, 3, 1]
+
+world:
+  l1_regime:
+    p_calm_to_stressed: 0.03
+    p_stressed_to_calm: 0.10
+    stressed_shock_scale: 2.5
+    initial_state: 0
+  l1_seasonality:
+    annual_amplitude: 0.18
+    annual_phase_doy: 15
+  l2_solar:
+    peak_mw: 50.0
+    latitude_deg: 58.7
+    clearness_mean_summer: 0.65
+    clearness_mean_winter: 0.45
+    clearness_ou_theta: 4.0
+    clearness_ou_sigma: 0.35
+    cloudy_day_prob: 0.20
+    cloudy_day_extra_sigma: 0.20
+  l3_da:
+    base_eur_mwh: 65.0
+    beta_load: 18.0
+    beta_gas: 12.0
+    shock_df: 4
+    shock_sigma_calm: 8.0
+    shock_sigma_stressed: 22.0
+    gas_co2_state: 0.0
+    negative_price_floor: -100.0
+  l4_id:
+    spread_sigma_by_round: [6.0, 4.0, 2.5]
+    spread_ar1_phi: 0.4
+    spread_da_shock_corr: 0.3
+  l5_imbalance:
+    markup_long_surplus: 8.0
+    markup_short_surplus: 18.0
+    markup_long_shortfall: 5.0
+    markup_short_shortfall: 25.0
+    aggregate_solar_correlation: 0.6
+
+forecast:
+  n_scenarios_da: 50
+  n_scenarios_id: 30
+  solar_sigma_floor: 0.5
+  solar_sigma_max: 8.0
+  solar_tau_lead_h: 12.0
+  solar_corr_tau_h: 2.0
+  da_sigma_floor: 1.0
+  da_sigma_max: 25.0
+  da_tau_lead_h: 18.0
+  da_corr_tau_h: 3.0
+  id_sigma_floor: 0.5
+  id_sigma_max: 15.0
+  id_tau_lead_h: 6.0
+  id_corr_tau_h: 1.5
+  imb_sigma_floor: 2.0
+  imb_sigma_max: 35.0
+  imb_tau_lead_h: 4.0
+  imb_corr_tau_h: 1.0
+  solar_da_corr: -0.45
+
+cvar:
+  alpha: 0.95
+  lambda_cvar: 0.0
+  lambda_imbalance: 0.0
