@@ -46,8 +46,34 @@ All four policies share the same callback contract; the only difference is what'
 """))
 
     cells.append(code("""from __future__ import annotations
-from datetime import date, timedelta
+
+# --- Make `solarbess` importable regardless of how this notebook is launched ---
+# Works whether the kernel has the package installed or not. We just prepend the
+# project's `src/` directory to sys.path so `import solarbess` resolves to the
+# checked-out source tree.
+import sys
 from pathlib import Path
+
+_HERE = Path.cwd()
+_CANDIDATES = [_HERE / 'src', _HERE.parent / 'src', _HERE.parent.parent / 'src']
+for _candidate in _CANDIDATES:
+    if (_candidate / 'solarbess' / '__init__.py').is_file():
+        if str(_candidate) not in sys.path:
+            sys.path.insert(0, str(_candidate))
+        _PROJECT_ROOT = _candidate.parent
+        break
+else:
+    raise RuntimeError(
+        'Could not locate the solarbess src/ directory from {}. '
+        'Either run the notebook from the project root / notebooks/ folder, '
+        'or `uv sync` + select the project venv as kernel.'.format(_HERE)
+    )
+import os
+os.chdir(_PROJECT_ROOT)  # so relative paths like 'configs/default.yaml' work
+print(f'solarbess src   : {sys.path[0]}')
+print(f'working dir set : {_PROJECT_ROOT}')
+
+from datetime import date, timedelta
 
 import matplotlib.pyplot as plt
 import numpy as np
